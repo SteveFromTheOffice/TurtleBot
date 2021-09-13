@@ -1,12 +1,14 @@
 {
-    "key"       : "YOUR_KEY_HERE",
-    "secret"    : "YOUR_SECRET_HERE",
-    "webhook"   : "",
+    "key"        : "YOUR_KEY_HERE",
+    "secret"     : "YOUR_SECRET_HERE",
+    "webhook"    : "",
     
-    "balance"   : 100,
-    "risk"      : 0.01,
-    "pairs"     : ["ETHUSDT", "MATICUSDT"],
-    "timeframe" : "1h",
-    "topLength" : 200,
-    "botLength" : 200
+    "balance"    : 100,
+    "risk"       : 0.01,
+    "pairs"      : ["ETHUSDT", "MATICUSDT"],
+    "timeframe"  : "1h",
+    "slowLength" : 200,
+    "fastLength" : 200,
+    "long"       : true,
+    "short"      : true
 }

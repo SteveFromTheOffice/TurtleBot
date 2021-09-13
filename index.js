@@ -19,8 +19,8 @@ let binance = new Binance(settings.key, settings.secret);
     });
     binance.on('candle', async (candle) => {
             
-        let turtle  = new Turtle(settings.topLength, settings.botLength);
-        let candles = await binance.getCandles(candle.symbol, settings.timeframe, Math.max(settings.topLength, settings.botLength)*2+1);
+        let turtle  = new Turtle(settings.slowLength, settings.fastLength);
+        let candles = await binance.getCandles(candle.symbol, settings.timeframe, Math.max(settings.slowLength, settings.fastLength)*2+1);
             
         // Update indicator.
         candles.forEach(candle => {
@@ -31,7 +31,8 @@ let binance = new Binance(settings.key, settings.secret);
         binance.cancelOpenOrders(candle.symbol);
             
         let position = binance.account.positions.find(o => o.symbol == candle.symbol && Number(o.positionAmt) != 0);
-        let qty      = BALANCE*settings.risk / (turtle.longEntry - turtle.longStop);
+        let longQty  = BALANCE*settings.risk / (turtle.longEntry - turtle.longStop);
+        let shortQty = BALANCE*settings.risk / (turtle.shortEntry - turtle.shortStop);
         
         // We have a long position, update the SL.
         if( position && position.positionAmt > 0 ) {
@@ -44,13 +45,13 @@ let binance = new Binance(settings.key, settings.secret);
         }
         
         // We don't have a position, create new long entry.
-        if( !position && turtle.token == -1 ) {
-            binance.stopOrder(candle.symbol, "LONG", "BUY", qty, turtle.longEntry);
+        if( settings.long && !position && turtle.token == 0 ) {
+            binance.stopOrder(candle.symbol, "LONG", "BUY", longQty, turtle.longEntry);
         }
         
         // We don't have a position, create new short entry.
-        if( !position && turtle.token == 1 ) {
-            binance.stopOrder(candle.symbol, "SHORT", "SELL", qty, turtle.shortEntry);
+        if( settings.short && !position && turtle.token == 0 ) {
+            binance.stopOrder(candle.symbol, "SHORT", "SELL", shortQty, turtle.shortEntry);
         }
          
     });

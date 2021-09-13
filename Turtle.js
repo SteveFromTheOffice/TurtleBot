@@ -3,31 +3,41 @@ const DonchianChannel = require("./DonchianChannel.js");
 
 module.exports = class Turtle extends EventEmitter {
 
-    constructor(topLength=20, botLength=10) {
+    constructor(slowLength=20, fastLength=10) {
         super();
         
-        this.top   = new DonchianChannel(topLength);
-        this.bot   = new DonchianChannel(botLength);
+        this.slow   = new DonchianChannel(slowLength);
+        this.fast   = new DonchianChannel(fastLength);
         this.token = 0;
 
     }
 
     update(candle) {
         
-        if( candle.high >= this.top.high )
-            this.token = 1;
-            
-        if( candle.low <= this.bot.low )
-            this.token = -1;
-            
-        this.top.update(candle);
-        this.bot.update(candle);
+        if( this.token == 0 ) {
         
-        this.longEntry = this.top.high;
-        this.longStop  = this.bot.low;
+            if( candle.high >= this.slow.high )
+                this.token = 1;
+            
+            if( candle.low <= this.slow.low )
+                this.token = -1;
+            
+        }
         
-        this.shortEntry = this.top.low;
-        this.shortStop  = this.bot.high;
+        if( this.token == -1 && candle.high > this.fast.high )
+            this.token = 0;
+            
+        if( this.token == 1 && candle.low < this.fast.low )
+            this.token = 0;
+            
+        this.slow.update(candle);
+        this.fast.update(candle);
+        
+        this.longEntry = this.slow.high;
+        this.longStop  = this.fast.low;
+        
+        this.shortEntry = this.slow.low;
+        this.shortStop  = this.fast.high;
         
     }
     
