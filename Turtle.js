@@ -24,10 +24,10 @@ module.exports = class Turtle extends EventEmitter {
             
         }
         
-        if( this.token == -1 && candle.high > this.fast.high )
+        else if( this.token == -1 && candle.high > this.fast.high )
             this.token = 0;
             
-        if( this.token == 1 && candle.low < this.fast.low )
+        else if( this.token == 1 && candle.low < this.fast.low )
             this.token = 0;
             
         this.slow.update(candle);
