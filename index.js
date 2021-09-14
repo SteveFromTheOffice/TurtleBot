@@ -23,6 +23,7 @@ let binance = new Binance(settings.key, settings.secret);
         let candles = await binance.getCandles(candle.symbol, settings.timeframe, Math.max(settings.slowLength, settings.fastLength)*2+1);
             
         // Update indicator.
+        candles.pop();
         candles.forEach(candle => {
             turtle.update(candle);
         });
@@ -45,12 +46,12 @@ let binance = new Binance(settings.key, settings.secret);
         }
         
         // We don't have a position, create new long entry.
-        if( settings.long && !position && turtle.token == 0 ) {
+        if( settings.long && !position && turtle.token <= 0 ) {
             binance.stopOrder(candle.symbol, "LONG", "BUY", longQty, turtle.longEntry);
         }
         
         // We don't have a position, create new short entry.
-        if( settings.short && !position && turtle.token == 0 ) {
+        if( settings.short && !position && turtle.token >= 0 ) {
             binance.stopOrder(candle.symbol, "SHORT", "SELL", shortQty, turtle.shortEntry);
         }
          
