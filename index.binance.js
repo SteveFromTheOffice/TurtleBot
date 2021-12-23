@@ -1,6 +1,6 @@
 const Turtle      = require("./Turtle.js");
 const Binance     = require("./BinanceFutures.js");
-const settings    = require("./config.json");
+const settings    = require("./config.json").binance;
 const { Webhook } = require("discord-webhook-node");
 
 let BALANCE = settings.balance;
@@ -22,8 +22,14 @@ let binance = new Binance(settings.key, settings.secret);
         let turtle  = new Turtle(settings.slowLength, settings.fastLength);
         let candles = await binance.getCandles(candle.symbol, settings.timeframe, Math.max(settings.slowLength, settings.fastLength)*2+1);
             
-        // Update indicator.
+        
+        // Remove incomplete candle.
         candles.pop();
+        
+        // Remove previous candle.
+        candles.pop();
+        
+        // Update indicator.
         candles.forEach(candle => {
             turtle.update(candle);
         });
@@ -37,21 +43,25 @@ let binance = new Binance(settings.key, settings.secret);
         
         // We have a long position, update the SL.
         if( position && position.positionAmt > 0 ) {
+            console.log(candle.symbol, "LONG", "SELL", position.positionAmt, turtle.longStop);
             binance.stopOrder(candle.symbol, "LONG", "SELL", position.positionAmt, turtle.longStop);
         }
         
         // We have a short position, update the SL.
         if( position && position.positionAmt < 0 ) {
+            console.log(candle.symbol, "SHORT", "BUY", position.positionAmt, turtle.shortStop);
             binance.stopOrder(candle.symbol, "SHORT", "BUY", position.positionAmt, turtle.shortStop);
         }
         
         // We don't have a position, create new long entry.
-        if( settings.long && !position && turtle.token <= 0 ) {
+        if( settings.long && !position ) {// && turtle.token <= 0 ) {
+            console.log(candle.symbol, "LONG", "BUY", longQty, turtle.longEntry);
             binance.stopOrder(candle.symbol, "LONG", "BUY", longQty, turtle.longEntry);
         }
         
         // We don't have a position, create new short entry.
-        if( settings.short && !position && turtle.token >= 0 ) {
+        if( settings.short && !position ) {// && turtle.token >= 0 ) {
+            console.log(candle.symbol, "SHORT", "SELL", shortQty, turtle.shortEntry);
             binance.stopOrder(candle.symbol, "SHORT", "SELL", shortQty, turtle.shortEntry);
         }
          

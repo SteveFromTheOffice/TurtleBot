@@ -1,14 +1,30 @@
 {
-    "key"        : "YOUR_KEY_HERE",
-    "secret"     : "YOUR_SECRET_HERE",
-    "webhook"    : "",
+    "binance": {
+        "key"        : "YOUR_KEY_HERE",
+        "secret"     : "YOUR_SECRET_HERE",
+        "webhook"    : "",
     
-    "balance"    : 100,
-    "risk"       : 0.01,
-    "pairs"      : ["ETHUSDT", "MATICUSDT"],
-    "timeframe"  : "1h",
-    "slowLength" : 200,
-    "fastLength" : 200,
-    "long"       : true,
-    "short"      : true
+        "balance"    : 100,
+        "risk"       : 0.01,
+        "instruments": ["ETHUSDT", "MATICUSDT"],
+        "interval"   : "1h",
+        "slowLength" : 200,
+        "fastLength" : 200,
+        "long"       : true,
+        "short"      : true
+    },
+    
+    "oanda": {
+        "token"      : "YOUR_KEY_HERE",
+        "account"    : "YOUR_ACCOUNT_HERE",
+        "webhook"    : "",
+        
+        "instruments": ["NAS100_USD"],
+        "interval"   : "M1",
+        "risk"       : 0.01,
+        "slowLength" : 100,
+        "fastLength" : 40,
+        "long"       : true,
+        "short"      : true
+    }
 }

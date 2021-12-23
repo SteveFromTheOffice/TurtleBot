@@ -106,7 +106,7 @@ module.exports = class Binance extends EventEmitter {
             symbol    : symbol
         }
         
-        console.log(`[${symbol}] Cancelling open orders.`);
+       // console.log(`[${symbol}] Cancelling open orders.`);
 
         return this._authRequest("DELETE", `/fapi/v1/allOpenOrders`, query, undefined)
             .catch(error => {
@@ -314,7 +314,7 @@ module.exports = class Binance extends EventEmitter {
             //closePosition : true
         }
         
-        console.log(`[${symbol}] STOP ORDER -- ${positionSide} ${side} : ${quantity} contracts @ ${price} USDT`);
+        //console.log(`[${symbol}] STOP ORDER -- ${positionSide} ${side} : ${quantity} contracts @ ${price} USDT`);
 
         return this._authRequest("POST", "/fapi/v1/order", query, undefined)
             .catch(error => {
